@@ -53,7 +53,7 @@ I deliberately **disabled** LIDAR (`use_lidar=False`) to reduce the default 180-
 ## 🧠 DQN Architecture & Design
 
 <p align="center">
-  <img src="plots/DQN_Architecture.png" alt="DQN Network Architecture" width="95%"/>
+  <img src="plots/DQN_Architecture.png" alt="DQN Network Architecture" style="max-width: 100%; height: auto;" width="100%"/>
 </p>
 
 I kept the architecture intentionally minimal — a 2-layer MLP with a single hidden layer of 256 neurons. No convolutional layers, no LSTMs, no attention. The 12-dim numerical state vector is compact enough that a lightweight network converges rapidly without overfitting.
@@ -108,7 +108,7 @@ My original agent **failed to converge after 50,000 episodes**. I identified and
 ### Best Reward Progression
 
 <p align="center">
-  <img src="plots/Reward_Progression.png" alt="Reward Progression Over Training" width="90%"/>
+  <img src="plots/Reward_Progression.png" alt="Reward Progression Over Training" style="max-width: 100%; height: auto;" width="100%"/>
 </p>
 
 My agent's learning curve shows a characteristic DQN pattern: slow initial exploration (episodes 1–139), rapid skill acquisition once the replay memory was primed (episodes 139–5,000), and then a long tail of incremental improvement toward mastery (5,000–33,802).
@@ -116,7 +116,7 @@ My agent's learning curve shows a characteristic DQN pattern: slow initial explo
 ### Key Milestones
 
 <p align="center">
-  <img src="plots/Training_Milestones.png" alt="Training Milestones" width="90%"/>
+  <img src="plots/Training_Milestones.png" alt="Training Milestones" style="max-width: 100%; height: auto;" width="100%"/>
 </p>
 
 | Milestone | Episode | Reward |
