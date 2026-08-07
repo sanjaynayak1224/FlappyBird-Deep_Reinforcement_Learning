@@ -14,10 +14,10 @@ The agent started with zero knowledge of the game, and through iterative optimiz
 
 ## 📌 Key Results
 
-* **Best Reward**: `101.9` cumulative reward at episode 33,802 — sustained flight across dozens of pipes in a single run.
-* **First Positive Reward**: Episode 139 — the agent learned to survive past its first pipe within minutes of training.
-* **Training Scale**: 100,000+ episodes of continuous self-play, totaling millions of environment steps.
-* **Convergence Speed**: After optimization, the agent hits expert-level performance (50+ reward) within ~7,000 episodes.
+- **Best Reward**: `101.9` cumulative reward at episode 33,802 — sustained flight across dozens of pipes in a single run.
+- **First Positive Reward**: Episode 139 — the agent learned to survive past its first pipe within minutes of training.
+- **Training Scale**: 100,000+ episodes of continuous self-play, totaling millions of environment steps.
+- **Convergence Speed**: After optimization, the agent hits expert-level performance (50+ reward) within ~7,000 episodes.
 
 ---
 
@@ -29,19 +29,19 @@ The agent started with zero knowledge of the game, and through iterative optimiz
 
 I deliberately **disabled** LIDAR (`use_lidar=False`) to reduce the default 180-dimensional observation space down to a concise **12-dimensional vector**, enabling rapid convergence with a small MLP instead of requiring convolutional architectures.
 
-| Feature Group | Dimensions | Description |
-|:---|:---:|:---|
-| Bird State | 3 | Vertical position, velocity, rotation |
-| Next Pipe | 4 | Top/bottom pipe coordinates for the upcoming gap |
-| Following Pipe | 4 | Top/bottom pipe coordinates for the gap after next |
-| Score Info | 1 | Player score (passed pipes count) |
+| Feature Group  | Dimensions | Description                                        |
+| :------------- | :--------: | :------------------------------------------------- |
+| Bird State     |     3      | Vertical position, velocity, rotation              |
+| Next Pipe      |     4      | Top/bottom pipe coordinates for the upcoming gap   |
+| Following Pipe |     4      | Top/bottom pipe coordinates for the gap after next |
+| Score Info     |     1      | Player score (passed pipes count)                  |
 
 ### Action Space & Rewards
 
-| Action | ID | Effect |
-|:---|:---:|:---|
-| Idle | `0` | No flap — bird falls under gravity |
-| Flap | `1` | Upward impulse |
+| Action | ID  | Effect                             |
+| :----- | :-: | :--------------------------------- |
+| Idle   | `0` | No flap — bird falls under gravity |
+| Flap   | `1` | Upward impulse                     |
 
 - **+0.1** per frame survived
 - **+1.0** for passing through a pipe gap
@@ -64,12 +64,12 @@ Input(12) → Linear(256) → ReLU → Linear(2) → Q-values [flap, idle]
 
 ### Core DQN Components
 
-| Component | Implementation | Purpose |
-|:---|:---|:---|
-| **Policy Network** | `DQN(12, 2, 256)` | Predicts Q-values for action selection |
-| **Target Network** | Frozen copy of policy net | Provides stable TD targets during training |
-| **Experience Replay** | `deque(maxlen=100,000)` | Breaks temporal correlation in training batches |
-| **Epsilon-Greedy** | `1.0 → 0.05` (decay: 0.999) | Balances exploration vs. exploitation |
+| Component             | Implementation              | Purpose                                         |
+| :-------------------- | :-------------------------- | :---------------------------------------------- |
+| **Policy Network**    | `DQN(12, 2, 256)`           | Predicts Q-values for action selection          |
+| **Target Network**    | Frozen copy of policy net   | Provides stable TD targets during training      |
+| **Experience Replay** | `deque(maxlen=100,000)`     | Breaks temporal correlation in training batches |
+| **Epsilon-Greedy**    | `1.0 → 0.05` (decay: 0.999) | Balances exploration vs. exploitation           |
 
 ---
 
@@ -77,29 +77,29 @@ Input(12) → Linear(256) → ReLU → Linear(2) → Q-values [flap, idle]
 
 I trained the agent for **100,000+ episodes** using the following hyperparameters (from `parameters.yaml`):
 
-| Hyperparameter | Value |
-|:---|:---|
-| Learning Rate (α) | `0.001` |
-| Discount Factor (γ) | `0.99` |
-| Epsilon (initial → min) | `1.0 → 0.05` |
-| Epsilon Decay | `0.999` per episode |
-| Replay Memory | `100,000` transitions |
-| Mini-batch Size | `32` |
-| Target Network Sync | Every `1,000` gradient steps |
-| Optimizer | Adam |
-| Loss Function | MSE |
-| Reward Threshold | `1,000` (episode termination cap) |
+| Hyperparameter          | Value                             |
+| :---------------------- | :-------------------------------- |
+| Learning Rate (α)       | `0.001`                           |
+| Discount Factor (γ)     | `0.99`                            |
+| Epsilon (initial → min) | `1.0 → 0.05`                      |
+| Epsilon Decay           | `0.999` per episode               |
+| Replay Memory           | `100,000` transitions             |
+| Mini-batch Size         | `32`                              |
+| Target Network Sync     | Every `1,000` gradient steps      |
+| Optimizer               | Adam                              |
+| Loss Function           | MSE                               |
+| Reward Threshold        | `1,000` (episode termination cap) |
 
 ### Critical Optimizations That Made It Work
 
 My original agent **failed to converge after 50,000 episodes**. I identified and applied four targeted engineering fixes — each addressing a specific bottleneck. Full details are documented in [`optimization_summary.md`](optimization_summary.md).
 
-| Fix | Problem | Solution | Impact |
-|:---|:---|:---|:---|
-| **Disable LIDAR** | 180-dim input overwhelmed a 256-unit MLP | Switch to 12-dim vector (`use_lidar=False`) | Reduced input complexity by 15x |
-| **Step-level Training** | 1 gradient update per episode (50+ steps wasted) | Optimize on every environment step | 10–100x more gradient updates per episode |
-| **Target Stability** | Target net synced every episode (chasing moving targets) | Sync every 1,000 gradient steps | Stable Q-value targets, eliminated oscillation |
-| **Truncation Handling** | Ignored Gymnasium's `truncated` flag | Check both `terminated` and `truncated` | Prevented infinite loops and stale episodes |
+| Fix                     | Problem                                                  | Solution                                    | Impact                                         |
+| :---------------------- | :------------------------------------------------------- | :------------------------------------------ | :--------------------------------------------- |
+| **Disable LIDAR**       | 180-dim input overwhelmed a 256-unit MLP                 | Switch to 12-dim vector (`use_lidar=False`) | Reduced input complexity by 15x                |
+| **Step-level Training** | 1 gradient update per episode (50+ steps wasted)         | Optimize on every environment step          | 10–100x more gradient updates per episode      |
+| **Target Stability**    | Target net synced every episode (chasing moving targets) | Sync every 1,000 gradient steps             | Stable Q-value targets, eliminated oscillation |
+| **Truncation Handling** | Ignored Gymnasium's `truncated` flag                     | Check both `terminated` and `truncated`     | Prevented infinite loops and stale episodes    |
 
 ---
 
@@ -119,13 +119,13 @@ My agent's learning curve shows a characteristic DQN pattern: slow initial explo
   <img src="plots/Training_Milestones.png" alt="Training Milestones" style="max-width: 100%; height: auto;" width="100%"/>
 </p>
 
-| Milestone | Episode | Reward |
-|:---|---:|---:|
-| First positive reward | 139 | 0.3 |
-| Passing multiple pipes (10+) | 2,708 | 10.7 |
-| Sustained flight (25+) | 4,547 | 36.4 |
-| Expert level (50+) | 6,951 | 50.4 |
-| Mastery (100+) | 33,802 | 101.9 |
+| Milestone                    | Episode | Reward |
+| :--------------------------- | ------: | -----: |
+| First positive reward        |     139 |    0.3 |
+| Passing multiple pipes (10+) |   2,708 |   10.7 |
+| Sustained flight (25+)       |   4,547 |   36.4 |
+| Expert level (50+)           |   6,951 |   50.4 |
+| Mastery (100+)               |  33,802 |  101.9 |
 
 ---
 
