@@ -6,9 +6,9 @@
 [![CUDA](https://img.shields.io/badge/CUDA-GPU%20Accelerated-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-A from-scratch Deep Q-Network agent that learns to play Flappy Bird using GPU-accelerated experience replay, target network stabilization, and epsilon-greedy exploration — trained over **100,000+ episodes** on the `FlappyBird-v0` Gymnasium environment.
+I built a Deep Q-Network agent from scratch to learn Flappy Bird using GPU-accelerated experience replay, target network stabilization, and epsilon-greedy exploration — trained over **100,000+ episodes** on the `FlappyBird-v0` Gymnasium environment.
 
-The agent started with zero knowledge of the game, and through iterative optimization of the training pipeline, **achieved a best cumulative reward of 101.9** in a single episode.
+The agent started with zero knowledge of the game, and through iterative optimization of the training pipeline, **I achieved a best cumulative reward of 101.9** in a single episode.
 
 ---
 
@@ -27,7 +27,7 @@ The agent started with zero knowledge of the game, and through iterative optimiz
 
 ### State Representation (12-dim Numerical Vector)
 
-LIDAR was deliberately **disabled** (`use_lidar=False`) to reduce the default 180-dimensional observation space down to a concise **12-dimensional vector**, enabling rapid convergence with a small MLP instead of requiring convolutional architectures.
+I deliberately **disabled** LIDAR (`use_lidar=False`) to reduce the default 180-dimensional observation space down to a concise **12-dimensional vector**, enabling rapid convergence with a small MLP instead of requiring convolutional architectures.
 
 | Feature Group | Dimensions | Description |
 |:---|:---:|:---|
@@ -56,7 +56,7 @@ LIDAR was deliberately **disabled** (`use_lidar=False`) to reduce the default 18
   <img src="plots/DQN_Architecture.png" alt="DQN Network Architecture" width="95%"/>
 </p>
 
-The architecture is intentionally minimal — a 2-layer MLP with a single hidden layer of 256 neurons. No convolutional layers, no LSTMs, no attention. The 12-dim numerical state vector is compact enough that a lightweight network converges rapidly without overfitting.
+I kept the architecture intentionally minimal — a 2-layer MLP with a single hidden layer of 256 neurons. No convolutional layers, no LSTMs, no attention. The 12-dim numerical state vector is compact enough that a lightweight network converges rapidly without overfitting.
 
 ```
 Input(12) → Linear(256) → ReLU → Linear(2) → Q-values [flap, idle]
@@ -92,7 +92,7 @@ I trained the agent for **100,000+ episodes** using the following hyperparameter
 
 ### Critical Optimizations That Made It Work
 
-The original agent **failed to converge after 50,000 episodes**. Four targeted engineering fixes resolved this — each addressing a specific bottleneck. Full details are documented in [`optimization_summary.md`](optimization_summary.md).
+My original agent **failed to converge after 50,000 episodes**. I identified and applied four targeted engineering fixes — each addressing a specific bottleneck. Full details are documented in [`optimization_summary.md`](optimization_summary.md).
 
 | Fix | Problem | Solution | Impact |
 |:---|:---|:---|:---|
@@ -111,7 +111,7 @@ The original agent **failed to converge after 50,000 episodes**. Four targeted e
   <img src="plots/Reward_Progression.png" alt="Reward Progression Over Training" width="90%"/>
 </p>
 
-The agent's learning curve shows a characteristic DQN pattern: slow initial exploration (episodes 1–139), rapid skill acquisition once replay memory is primed (episodes 139–5,000), and then a long tail of incremental improvement toward mastery (5,000–33,802).
+My agent's learning curve shows a characteristic DQN pattern: slow initial exploration (episodes 1–139), rapid skill acquisition once the replay memory was primed (episodes 139–5,000), and then a long tail of incremental improvement toward mastery (5,000–33,802).
 
 ### Key Milestones
 
