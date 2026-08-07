@@ -1,4 +1,4 @@
-# 🐦 FlappyBird — Deep Q-Network (DQN) Reinforcement Learning
+# 🐦 FlappyBird: Deep Q-Network (DQN) Reinforcement Learning
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
